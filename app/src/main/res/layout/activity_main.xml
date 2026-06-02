@@ -5,25 +5,100 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <Button
-        android:id="@+id/btnAuthorize"
+    <TextView
+        android:id="@+id/txtMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Authorize 1000 cents" />
+        android:text="Mode: REAL"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
+
+        <EditText
+            android:id="@+id/inputAmount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Amount cents"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/btnAuthorize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Authorize" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/txtResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Result will appear here"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
-        android:textSize="16sp" />
+        android:paddingTop="12dp"
+        android:text="History"
+        android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/historyList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/txtDetail"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:paddingTop="8dp"
+        android:scrollbars="vertical"
+        android:text="Select a transaction"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cancel"/>
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/inputCaptureAmount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Capture cents"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/btnCapture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Capture" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/btnRetry"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Retry" />
+    </LinearLayout>
 
 </LinearLayout>

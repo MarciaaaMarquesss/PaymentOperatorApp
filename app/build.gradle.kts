@@ -36,6 +36,7 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))
     testImplementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))
 
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.2")
     implementation("androidx.lifecycle:lifecycle-reactivestreams:2.6.2")
     implementation("io.reactivex.rxjava2:rxjava:2.2.21")
     implementation("androidx.appcompat:appcompat:1.6.1")

@@ -1,5 +1,7 @@
 package com.marcia.paymentoperator.domain.engine;
 
+import androidx.lifecycle.LiveData;
+
 import com.elecctro.recruitment.paymentterminal.AuthorizationResult;
 import com.elecctro.recruitment.paymentterminal.ErrorCode;
 import com.elecctro.recruitment.paymentterminal.State;
@@ -45,6 +47,10 @@ public class TransactionEngine {
                 );
 
         return tx;
+    }
+
+    public synchronized LiveData<List<Transaction>> observeTransactions() {
+        return repository.observeTransactions();
     }
 
     public synchronized boolean capture(UUID txnId, long amount) {
