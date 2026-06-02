@@ -22,11 +22,11 @@ public class Transaction {
     public Transaction(UUID id, long amountRequested) {
         this.id = id;
         this.amountRequested = amountRequested;
-        this.state = TransactionState.NEW;
+        this.state = TransactionState.AUTHORIZING;
         this.retryCount = 0;
         this.lastUpdated = System.currentTimeMillis();
 
-        addEvent("CREATED");
+        addEvent(TransactionState.AUTHORIZING.name());
     }
 
     public UUID getId() {

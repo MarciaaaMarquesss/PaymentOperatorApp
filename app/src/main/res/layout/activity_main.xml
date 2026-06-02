@@ -17,6 +17,13 @@
         android:layout_height="wrap_content"
         android:text="Result will appear here"
         android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"/>
 
 </LinearLayout>

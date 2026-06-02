@@ -2,7 +2,7 @@ package com.marcia.paymentoperator.domain.model;
 
 public enum TransactionState {
     NEW,
-    AUTHORISING,
+    AUTHORIZING,
     AUTHORIZED,
     CAPTURING,
     CAPTURED,
