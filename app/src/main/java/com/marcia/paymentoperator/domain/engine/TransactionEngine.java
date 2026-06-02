@@ -1,10 +1,6 @@
 package com.marcia.paymentoperator.domain.engine;
 
-import androidx.lifecycle.LiveData;
-
-import com.elecctro.recruitment.paymentterminal.AuthorizationResult;
 import com.elecctro.recruitment.paymentterminal.ErrorCode;
-import com.elecctro.recruitment.paymentterminal.State;
 import com.marcia.paymentoperator.data.gateway.PaymentTerminalGateway;
 import com.marcia.paymentoperator.data.repository.TransactionRepository;
 import com.marcia.paymentoperator.domain.model.Transaction;
@@ -26,7 +22,7 @@ public class TransactionEngine {
         UUID id = UUID.randomUUID();
         Transaction tx = new Transaction(id, amount);
         repository.save(tx);
-        gateway.authorize(id, amount).observeForever(result -> {
+        gateway.authorize(id, amount).subscribe(result -> {
             switch (result.state) {
                 case APPROVED:
                     tx.setAmountApproved(result.approvedAmount);
@@ -40,11 +36,9 @@ public class TransactionEngine {
                     break;
 
                 case TIMED_OUT:
-
                     tx.updateState(TransactionState.CANCELLING);
                     repository.update(tx);
                     cancel(tx.getId());
-
                     break;
             }
         });
@@ -69,7 +63,7 @@ public class TransactionEngine {
         repository.update(tx);
 
         gateway.cancel(txnId)
-                .observeForever(result -> {
+                .subscribe(result -> {
                     switch (result.state) {
                         case APPROVED:
                             tx.updateState(TransactionState.CANCELLED);

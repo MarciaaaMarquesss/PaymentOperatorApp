@@ -18,6 +18,7 @@ import com.marcia.paymentoperator.data.repository.TransactionRepositoryImpl;
 import com.marcia.paymentoperator.domain.engine.TransactionEngine;
 import com.marcia.paymentoperator.domain.model.Transaction;
 
+import java.io.File;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         PaymentTerminalGateway gateway = new PaymentTerminalGatewayImpl(terminal);
 
-        repository = new TransactionRepositoryImpl();
+        repository = new TransactionRepositoryImpl(new File(getFilesDir(), "transactions.properties"));
 
         repository.observeTransactions()
                 .observe(this, transactions -> {
