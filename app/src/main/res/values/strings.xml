@@ -1,14 +1,22 @@
 <resources>
     <string name="app_name">PaymentOperatorApp</string>
     <string name="mode_real">Mode: REAL</string>
+    <string name="title_authorization">Authorization</string>
     <string name="hint_amount_cents">Amount cents</string>
     <string name="action_authorize">Authorize</string>
     <string name="label_history">History</string>
+    <string name="label_latest_authorization">Latest authorization</string>
     <string name="text_select_transaction">Select a transaction</string>
+    <string name="text_no_authorization_result">No authorization started</string>
+    <string name="text_transaction_not_found">Transaction not found</string>
     <string name="hint_capture_cents">Capture cents</string>
     <string name="action_capture">Capture</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_retry">Retry</string>
+    <string name="action_open_history">History</string>
+    <string name="action_open_details">Details</string>
+    <string name="action_new_authorization">New authorization</string>
+    <string name="title_transaction_detail">Transaction detail</string>
     <string name="toast_enter_amount">Enter an amount greater than zero</string>
     <string name="toast_enter_capture_amount">Enter a capture amount</string>
     <string name="toast_capture_unavailable">Capture is not available for that amount</string>
@@ -23,6 +31,7 @@
     <string name="detail_state">State: %1$s\n</string>
     <string name="detail_last_error">Last error: %1$s\n</string>
     <string name="detail_updated">Updated: %1$s\n\n</string>
+    <string name="authorization_result">ID: %1$s\nRequested: %2$d cents\nApproved: %3$d cents\nState: %4$s\nLast error: %5$s\nUpdated: %6$s</string>
     <string name="transaction_row">%1$s | %2$d cents | %3$s\nUpdated %4$s</string>
     <string name="state_retry_count">%1$s (#%2$d)</string>
 </resources>

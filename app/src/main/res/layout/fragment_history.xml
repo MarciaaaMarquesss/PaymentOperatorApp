@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
+
+    <TextView
+        android:id="@+id/txtHistoryTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_history"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnNewAuthorization"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/action_new_authorization" />
+
+    <TextView
+        android:id="@+id/txtEmptyHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/section_top_padding"
+        android:text="@string/text_no_transactions" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/weighted_layout_size"
+        android:layout_weight="@integer/layout_weight_full"
+        android:paddingTop="@dimen/form_top_padding">
+
+        <LinearLayout
+            android:id="@+id/historyList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+</LinearLayout>

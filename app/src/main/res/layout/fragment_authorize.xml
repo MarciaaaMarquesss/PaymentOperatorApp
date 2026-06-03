@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
+
+    <TextView
+        android:id="@+id/txtMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/mode_real"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtAuthorizationTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/section_top_padding"
+        android:text="@string/title_authorization"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/form_top_padding">
+
+        <EditText
+            android:id="@+id/inputAmount"
+            android:layout_width="@dimen/weighted_layout_size"
+            android:layout_height="wrap_content"
+            android:layout_weight="@integer/layout_weight_full"
+            android:hint="@string/hint_amount_cents"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/btnAuthorize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_authorize" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txtLatestAuthorization"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/section_top_padding"
+        android:text="@string/label_latest_authorization"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtAuthorizationResult"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/weighted_layout_size"
+        android:layout_weight="@integer/layout_weight_full"
+        android:paddingTop="@dimen/detail_top_padding"
+        android:scrollbars="vertical"
+        android:text="@string/text_no_authorization_result"
+        android:textSize="@dimen/detail_text_size" />
+
+    <Button
+        android:id="@+id/btnOpenDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/action_open_details" />
+
+    <Button
+        android:id="@+id/btnOpenHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/action_open_history" />
+
+</LinearLayout>
