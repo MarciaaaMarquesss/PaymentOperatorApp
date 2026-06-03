@@ -39,6 +39,15 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(TransactionDetailFragment.newInstance(transactionId), BACK_STACK_DETAIL);
     }
 
+    public void goBack() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+            return;
+        }
+
+        showAuthorize();
+    }
+
     private void replaceFragment(Fragment fragment, String backStackName) {
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()

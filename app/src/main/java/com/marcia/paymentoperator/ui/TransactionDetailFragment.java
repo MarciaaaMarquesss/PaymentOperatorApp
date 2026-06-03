@@ -88,10 +88,10 @@ public class TransactionDetailFragment extends Fragment {
         btnCancel = view.findViewById(R.id.btnCancel);
         btnRetry = view.findViewById(R.id.btnRetry);
 
-        Button btnNewAuthorization = view.findViewById(R.id.btnNewAuthorization);
+        Button btnBack = view.findViewById(R.id.btnBack);
         Button btnOpenHistory = view.findViewById(R.id.btnOpenHistory);
 
-        btnNewAuthorization.setOnClickListener(v -> mainActivity().showAuthorize());
+        btnBack.setOnClickListener(v -> mainActivity().goBack());
         btnOpenHistory.setOnClickListener(v -> mainActivity().showHistory());
         btnCapture.setOnClickListener(v -> capture());
         btnCancel.setOnClickListener(v -> cancel());

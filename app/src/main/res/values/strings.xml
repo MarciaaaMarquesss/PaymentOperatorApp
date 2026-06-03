@@ -15,7 +15,7 @@
     <string name="action_retry">Retry</string>
     <string name="action_open_history">History</string>
     <string name="action_open_details">Details</string>
-    <string name="action_new_authorization">New authorization</string>
+    <string name="action_back">Back</string>
     <string name="title_transaction_detail">Transaction detail</string>
     <string name="toast_enter_amount">Enter an amount greater than zero</string>
     <string name="toast_enter_capture_amount">Enter a capture amount</string>

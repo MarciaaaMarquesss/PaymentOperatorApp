@@ -12,23 +12,21 @@
         android:text="@string/title_transaction_detail"
         android:textStyle="bold" />
 
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/action_back" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnNewAuthorization"
-            android:layout_width="@dimen/weighted_layout_size"
-            android:layout_height="wrap_content"
-            android:layout_weight="@integer/layout_weight_full"
-            android:text="@string/action_new_authorization" />
-
-        <Button
             android:id="@+id/btnOpenHistory"
-            android:layout_width="@dimen/weighted_layout_size"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="@integer/layout_weight_full"
             android:text="@string/action_open_history" />
     </LinearLayout>
 

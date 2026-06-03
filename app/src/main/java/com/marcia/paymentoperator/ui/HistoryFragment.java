@@ -43,8 +43,8 @@ public class HistoryFragment extends Fragment {
         historyList = view.findViewById(R.id.historyList);
         txtEmptyHistory = view.findViewById(R.id.txtEmptyHistory);
 
-        Button btnNewAuthorization = view.findViewById(R.id.btnNewAuthorization);
-        btnNewAuthorization.setOnClickListener(v -> mainActivity().showAuthorize());
+        Button btnBack = view.findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> mainActivity().goBack());
 
         viewModel.observeTransactions().observe(getViewLifecycleOwner(), this::renderHistory);
     }
