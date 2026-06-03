@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">PaymentOperatorApp</string>
-    <string name="mode_real">Mode: REAL</string>
+    <string name="mode_selected">Mode: %1$s</string>
+    <string name="mode_selected_default">Mode</string>
     <string name="title_authorization">Authorization</string>
     <string name="hint_amount_cents">Amount cents</string>
     <string name="action_authorize">Authorize</string>

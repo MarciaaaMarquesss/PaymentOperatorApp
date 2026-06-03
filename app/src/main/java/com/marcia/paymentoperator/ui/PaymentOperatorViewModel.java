@@ -35,6 +35,10 @@ public class PaymentOperatorViewModel extends AndroidViewModel {
         return latestAuthorizationId;
     }
 
+    public String terminalModeName() {
+        return PaymentOperatorFactory.terminalModeName();
+    }
+
     public Transaction authorize(long amount) {
         Transaction transaction = engine.authorize(amount);
         latestAuthorizationId.setValue(transaction.getId());

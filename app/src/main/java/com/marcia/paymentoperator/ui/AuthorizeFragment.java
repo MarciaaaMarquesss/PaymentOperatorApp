@@ -51,6 +51,7 @@ public class AuthorizeFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(PaymentOperatorViewModel.class);
 
         inputAmount = view.findViewById(R.id.inputAmount);
+        TextView txtMode = view.findViewById(R.id.txtMode);
         txtAuthorizationResult = view.findViewById(R.id.txtAuthorizationResult);
         btnOpenDetails = view.findViewById(R.id.btnOpenDetails);
 
@@ -60,6 +61,8 @@ public class AuthorizeFragment extends Fragment {
         btnAuthorize.setOnClickListener(v -> authorize());
         btnOpenHistory.setOnClickListener(v -> mainActivity().showHistory());
         btnOpenDetails.setOnClickListener(v -> openCurrentDetails());
+
+        txtMode.setText(getString(R.string.mode_selected, viewModel.terminalModeName()));
 
         viewModel.observeTransactions().observe(getViewLifecycleOwner(), updatedTransactions -> {
             transactions = updatedTransactions;

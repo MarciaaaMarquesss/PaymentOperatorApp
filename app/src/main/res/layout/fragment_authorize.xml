@@ -9,7 +9,7 @@
         android:id="@+id/txtMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/mode_real"
+        android:text="@string/mode_selected_default"
         android:textStyle="bold" />
 
     <TextView

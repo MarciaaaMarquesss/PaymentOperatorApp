@@ -11,16 +11,21 @@ import java.io.File;
 
 public final class PaymentOperatorFactory {
 
+    private static final PaymentTerminal.Mode TERMINAL_MODE = PaymentTerminal.Mode.REAL;
     private static final String TRANSACTION_JOURNAL_FILENAME = "transactions.properties";
 
     private PaymentOperatorFactory() {
     }
 
     public static TransactionEngine create(File filesDir) {
-        PaymentTerminal terminal = PaymentTerminal.create(PaymentTerminal.Mode.REAL);
+        PaymentTerminal terminal = PaymentTerminal.create(TERMINAL_MODE);
         PaymentTerminalGateway gateway = new PaymentTerminalGatewayImpl(terminal);
         TransactionRepository repository =
                 new TransactionRepositoryImpl(new File(filesDir, TRANSACTION_JOURNAL_FILENAME));
         return new TransactionEngine(gateway, repository);
+    }
+
+    public static String terminalModeName() {
+        return TERMINAL_MODE.name();
     }
 }
