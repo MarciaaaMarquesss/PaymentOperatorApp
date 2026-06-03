@@ -17,6 +17,10 @@ On this Windows/WSL machine the Android SDK is installed on Windows, so Android 
 
 Open the project in Android Studio, select JDK 17 as the Gradle JDK, sync, and run the `app` configuration on an emulator or device. `PaymentOperatorFactory` creates the terminal in `REAL` mode.
 
+## Demo Recording
+
+The demo recording is available at https://youtu.be/LRlAz0sKqH8.
+
 ## Libraries
 
 - `payment-terminal.aar`: challenge SDK.
@@ -30,7 +34,6 @@ Open the project in Android Studio, select JDK 17 as the Gradle JDK, sync, and r
 - The UI is intentionally simple and fragment-based. It is functional for the challenge flows, but I would improve visual hierarchy and accessibility for production.
 - Backoff is process-resumed by retrying in-flight states on launch, not by persisting a future wake-up timestamp. That is acceptable for this app because no work should happen while the process is dead, but I would revisit it for a background service.
 - The journal is a compact properties file rather than Room. It keeps the persistence boundary easy to test and reason about for the challenge, but Room would be worth revisiting if queries grew beyond loading the latest 50 transactions.
-- The demo recording still needs to be produced separately.
 
 ## AI Assistance
 
