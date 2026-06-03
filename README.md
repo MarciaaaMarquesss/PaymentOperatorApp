@@ -11,8 +11,6 @@ Use JDK 17 to run Gradle. The app source itself is compiled with Java 8 compatib
 ./gradlew :app:testDebug
 ```
 
-On this Windows/WSL machine the Android SDK is installed on Windows, so Android Studio or `gradlew.bat` is the expected local build path.
-
 ## Run
 
 Open the project in Android Studio, select JDK 17 as the Gradle JDK, sync, and run the `app` configuration on an emulator or device. `PaymentOperatorFactory` creates the terminal in `REAL` mode.
