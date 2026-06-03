@@ -22,6 +22,12 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int FIRST_TRANSACTION_INDEX = 0;
+    private static final int SHORT_TRANSACTION_ID_LENGTH = 8;
+    private static final long MIN_AMOUNT_CENTS = 1L;
+    private static final long NO_APPROVED_AMOUNT = 0L;
+    private static final char LINE_BREAK = '\n';
+
     private PaymentOperatorViewModel viewModel;
     private Transaction selectedTransaction;
 
@@ -65,12 +71,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void authorize() {
         Long amount = readAmount(inputAmount);
-        if (amount == null || amount <= 0) {
-            showMessage("Enter an amount greater than zero");
+        if (amount == null || amount < MIN_AMOUNT_CENTS) {
+            showMessage(R.string.toast_enter_amount);
             return;
         }
         selectedTransaction = viewModel.authorize(amount);
-        inputAmount.setText("");
+        inputAmount.getText().clear();
         renderDetail(selectedTransaction);
     }
 
@@ -81,13 +87,13 @@ public class MainActivity extends AppCompatActivity {
 
         Long amount = readAmount(inputCaptureAmount);
         if (amount == null) {
-            showMessage("Enter a capture amount");
+            showMessage(R.string.toast_enter_capture_amount);
             return;
         }
 
         boolean accepted = viewModel.capture(selectedTransaction, amount);
         if (!accepted) {
-            showMessage("Capture is not available for that amount");
+            showMessage(R.string.toast_capture_unavailable);
         }
     }
 
@@ -97,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         }
         boolean accepted = viewModel.cancel(selectedTransaction);
         if (!accepted) {
-            showMessage("Cancel is not available");
+            showMessage(R.string.toast_cancel_unavailable);
         }
     }
 
@@ -107,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         }
         boolean accepted = viewModel.retry(selectedTransaction);
         if (!accepted) {
-            showMessage("Retry is not available");
+            showMessage(R.string.toast_retry_unavailable);
         }
     }
 
@@ -116,13 +122,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (transactions.isEmpty()) {
             selectedTransaction = null;
-            txtDetail.setText("No transactions yet");
+            txtDetail.setText(R.string.text_no_transactions);
             updateActions();
             return;
         }
 
         if (selectedTransaction == null || findSelected(transactions) == null) {
-            selectedTransaction = transactions.get(0);
+            selectedTransaction = transactions.get(FIRST_TRANSACTION_INDEX);
         } else {
             selectedTransaction = findSelected(transactions);
         }
@@ -156,26 +162,34 @@ public class MainActivity extends AppCompatActivity {
 
     private void renderDetail(Transaction tx) {
         if (tx == null) {
-            txtDetail.setText("Select a transaction");
+            txtDetail.setText(R.string.text_select_transaction);
             updateActions();
             return;
         }
 
+        String lastError = tx.getLastError() == null
+                ? getString(R.string.detail_empty_value)
+                : tx.getLastError();
+        String updatedAt = dateFormat.format(new Date(tx.getLastUpdated()));
         StringBuilder builder = new StringBuilder();
-        builder.append("ID: ").append(tx.getId()).append('\n');
-        builder.append("Requested: ").append(tx.getAmountRequested()).append(" cents\n");
-        builder.append("Approved: ").append(tx.getAmountApproved()).append(" cents\n");
-        builder.append("Capture amount: ").append(tx.getCaptureAmount()).append(" cents\n");
-        builder.append("State: ").append(stateLabel(tx)).append('\n');
-        builder.append("Last error: ").append(tx.getLastError() == null ? "-" : tx.getLastError()).append('\n');
-        builder.append("Updated: ").append(dateFormat.format(new Date(tx.getLastUpdated()))).append("\n\n");
+        builder.append(getString(R.string.detail_id, tx.getId()));
+        builder.append(getString(R.string.detail_requested, tx.getAmountRequested()));
+        builder.append(getString(R.string.detail_approved, tx.getAmountApproved()));
+        builder.append(getString(R.string.detail_capture_amount, tx.getCaptureAmount()));
+        builder.append(getString(R.string.detail_state, stateLabel(tx)));
+        builder.append(getString(R.string.detail_last_error, lastError));
+        builder.append(getString(R.string.detail_updated, updatedAt));
 
         for (String event : tx.getHistory()) {
-            builder.append(event).append('\n');
+            builder.append(event).append(LINE_BREAK);
         }
 
         txtDetail.setText(builder.toString());
-        inputCaptureAmount.setText(tx.getAmountApproved() > 0 ? String.valueOf(tx.getAmountApproved()) : "");
+        if (tx.getAmountApproved() > NO_APPROVED_AMOUNT) {
+            inputCaptureAmount.setText(String.valueOf(tx.getAmountApproved()));
+        } else {
+            inputCaptureAmount.getText().clear();
+        }
         updateActions();
     }
 
@@ -192,27 +206,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String rowText(Transaction tx) {
-        return shortId(tx)
-                + " | " + tx.getAmountRequested() + " cents"
-                + " | " + stateLabel(tx)
-                + "\nUpdated " + dateFormat.format(new Date(tx.getLastUpdated()));
+        return getString(
+                R.string.transaction_row,
+                shortId(tx),
+                tx.getAmountRequested(),
+                stateLabel(tx),
+                dateFormat.format(new Date(tx.getLastUpdated()))
+        );
     }
 
     private String stateLabel(Transaction tx) {
         if (tx.getState() == TransactionState.CAPTURING || tx.getState() == TransactionState.CANCELLING) {
-            return tx.getState().name() + " (#" + tx.getRetryCount() + ")";
+            return getString(R.string.state_retry_count, tx.getState().name(), tx.getRetryCount());
         }
         return tx.getState().name();
     }
 
     private String shortId(Transaction tx) {
         String value = tx.getId().toString();
-        return value.substring(0, 8);
+        return value.substring(FIRST_TRANSACTION_INDEX, SHORT_TRANSACTION_ID_LENGTH);
     }
 
     private Long readAmount(EditText editText) {
         String value = editText.getText().toString().trim();
-        if (value.length() == 0) {
+        if (value.isEmpty()) {
             return null;
         }
         try {
@@ -222,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    private void showMessage(int messageResId) {
+        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
     }
 }

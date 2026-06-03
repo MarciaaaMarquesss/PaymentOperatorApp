@@ -16,13 +16,24 @@ import java.util.UUID;
 
 public class TransactionEngine {
 
+    private static final int DEFAULT_MAX_RETRY_ATTEMPTS = 3;
+    private static final long DEFAULT_RETRY_BASE_DELAY_MILLIS = 1000L;
+    private static final long MIN_CAPTURE_AMOUNT_CENTS = 1L;
+    private static final long NO_CAPTURE_AMOUNT = 0L;
+    private static final String RECOVERY_ERROR = "RECOVERY";
+
     private final PaymentTerminalGateway gateway;
     private final TransactionRepository repository;
     private final RetryPolicy retryPolicy;
     private final RetryScheduler retryScheduler;
 
     public TransactionEngine(PaymentTerminalGateway gateway, TransactionRepository repository) {
-        this(gateway, repository, new RetryPolicy(3, 1000L), new ExecutorRetryScheduler());
+        this(
+                gateway,
+                repository,
+                new RetryPolicy(DEFAULT_MAX_RETRY_ATTEMPTS, DEFAULT_RETRY_BASE_DELAY_MILLIS),
+                new ExecutorRetryScheduler()
+        );
     }
 
     public TransactionEngine(PaymentTerminalGateway gateway,
@@ -58,7 +69,7 @@ public class TransactionEngine {
         if (tx == null || tx.getState() != TransactionState.AUTHORIZED) {
             return false;
         }
-        if (amount < 1 || amount > tx.getAmountApproved()) {
+        if (amount < MIN_CAPTURE_AMOUNT_CENTS || amount > tx.getAmountApproved()) {
             return false;
         }
 
@@ -93,7 +104,7 @@ public class TransactionEngine {
             return false;
         }
 
-        if (tx.getState() == TransactionState.CAPTURE_FAILED && tx.getCaptureAmount() > 0) {
+        if (tx.getState() == TransactionState.CAPTURE_FAILED && tx.getCaptureAmount() > NO_CAPTURE_AMOUNT) {
             tx.resetRetries();
             tx.updateState(TransactionState.CAPTURING);
             repository.update(tx);
@@ -116,7 +127,7 @@ public class TransactionEngine {
         List<Transaction> transactions = repository.getAll();
         for (Transaction tx : transactions) {
             if (tx.getState() == TransactionState.AUTHORIZING) {
-                tx.updateState(TransactionState.CANCELLING, "RECOVERY");
+                tx.updateState(TransactionState.CANCELLING, RECOVERY_ERROR);
                 repository.update(tx);
                 issueCancelAttempt(tx.getId());
             } else if (tx.getState() == TransactionState.CAPTURING) {

@@ -3,47 +3,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/screen_padding">
 
     <TextView
         android:id="@+id/txtMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mode: REAL"
+        android:text="@string/mode_real"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="8dp">
+        android:paddingTop="@dimen/form_top_padding">
 
         <EditText
             android:id="@+id/inputAmount"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/weighted_layout_size"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Amount cents"
+            android:layout_weight="@integer/layout_weight_full"
+            android:hint="@string/hint_amount_cents"
             android:inputType="number" />
 
         <Button
             android:id="@+id/btnAuthorize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Authorize" />
+            android:text="@string/action_authorize" />
     </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="12dp"
-        android:text="History"
+        android:paddingTop="@dimen/section_top_padding"
+        android:text="@string/label_history"
         android:textStyle="bold" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="@dimen/weighted_layout_size"
+        android:layout_weight="@integer/layout_weight_full">
 
         <LinearLayout
             android:id="@+id/historyList"
@@ -55,11 +55,11 @@
     <TextView
         android:id="@+id/txtDetail"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:paddingTop="8dp"
+        android:layout_height="@dimen/detail_height"
+        android:paddingTop="@dimen/detail_top_padding"
         android:scrollbars="vertical"
-        android:text="Select a transaction"
-        android:textSize="13sp" />
+        android:text="@string/text_select_transaction"
+        android:textSize="@dimen/detail_text_size" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -68,17 +68,17 @@
 
         <EditText
             android:id="@+id/inputCaptureAmount"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/weighted_layout_size"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Capture cents"
+            android:layout_weight="@integer/layout_weight_full"
+            android:hint="@string/hint_capture_cents"
             android:inputType="number" />
 
         <Button
             android:id="@+id/btnCapture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Capture" />
+            android:text="@string/action_capture" />
     </LinearLayout>
 
     <LinearLayout
@@ -88,17 +88,17 @@
 
         <Button
             android:id="@+id/btnCancel"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/weighted_layout_size"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Cancel" />
+            android:layout_weight="@integer/layout_weight_full"
+            android:text="@string/action_cancel" />
 
         <Button
             android:id="@+id/btnRetry"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/weighted_layout_size"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Retry" />
+            android:layout_weight="@integer/layout_weight_full"
+            android:text="@string/action_retry" />
     </LinearLayout>
 
 </LinearLayout>

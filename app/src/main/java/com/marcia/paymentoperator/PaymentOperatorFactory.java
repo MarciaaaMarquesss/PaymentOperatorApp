@@ -11,6 +11,8 @@ import java.io.File;
 
 public final class PaymentOperatorFactory {
 
+    private static final String TRANSACTION_JOURNAL_FILENAME = "transactions.properties";
+
     private PaymentOperatorFactory() {
     }
 
@@ -18,7 +20,7 @@ public final class PaymentOperatorFactory {
         PaymentTerminal terminal = PaymentTerminal.create(PaymentTerminal.Mode.REAL);
         PaymentTerminalGateway gateway = new PaymentTerminalGatewayImpl(terminal);
         TransactionRepository repository =
-                new TransactionRepositoryImpl(new File(filesDir, "transactions.properties"));
+                new TransactionRepositoryImpl(new File(filesDir, TRANSACTION_JOURNAL_FILENAME));
         return new TransactionEngine(gateway, repository);
     }
 }

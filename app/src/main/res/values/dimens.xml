@@ -1,0 +1,9 @@
+<resources>
+    <dimen name="screen_padding">16dp</dimen>
+    <dimen name="weighted_layout_size">0dp</dimen>
+    <dimen name="form_top_padding">8dp</dimen>
+    <dimen name="section_top_padding">12dp</dimen>
+    <dimen name="detail_height">120dp</dimen>
+    <dimen name="detail_top_padding">8dp</dimen>
+    <dimen name="detail_text_size">13sp</dimen>
+</resources>

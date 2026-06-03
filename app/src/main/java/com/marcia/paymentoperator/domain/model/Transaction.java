@@ -7,6 +7,17 @@ import java.util.UUID;
 
 public class Transaction {
 
+    private static final long INITIAL_AMOUNT = 0L;
+    private static final int INITIAL_RETRY_COUNT = 0;
+    private static final int RETRY_INCREMENT = 1;
+    private static final String EVENT_STATE = "STATE ";
+    private static final String EVENT_ERROR = " ERROR ";
+    private static final String EVENT_APPROVED_AMOUNT = "APPROVED_AMOUNT ";
+    private static final String EVENT_CAPTURE_AMOUNT = "CAPTURE_AMOUNT ";
+    private static final String EVENT_RETRY_RESET = "RETRY_RESET";
+    private static final String EVENT_RETRY = "RETRY ";
+    private static final String EVENT_SEPARATOR = " | ";
+
     private final UUID id;
     private final long amountRequested;
     private final long createdAt;
@@ -25,15 +36,15 @@ public class Transaction {
         this.id = id;
         this.amountRequested = amountRequested;
         this.createdAt = now;
-        this.amountApproved = 0L;
-        this.captureAmount = 0L;
+        this.amountApproved = INITIAL_AMOUNT;
+        this.captureAmount = INITIAL_AMOUNT;
         this.state = TransactionState.AUTHORIZING;
-        this.retryCount = 0;
+        this.retryCount = INITIAL_RETRY_COUNT;
         this.lastError = null;
         this.lastUpdated = now;
         this.history = new ArrayList<>();
 
-        addEvent(now, "STATE AUTHORIZING");
+        addEvent(now, EVENT_STATE + TransactionState.AUTHORIZING.name());
     }
 
     private Transaction(UUID id,
@@ -139,12 +150,12 @@ public class Transaction {
 
     public void setAmountApproved(long amountApproved) {
         this.amountApproved = amountApproved;
-        touch("APPROVED_AMOUNT " + amountApproved);
+        touch(EVENT_APPROVED_AMOUNT + amountApproved);
     }
 
     public void setCaptureAmount(long captureAmount) {
         this.captureAmount = captureAmount;
-        touch("CAPTURE_AMOUNT " + captureAmount);
+        touch(EVENT_CAPTURE_AMOUNT + captureAmount);
     }
 
     public void updateState(TransactionState newState) {
@@ -154,7 +165,9 @@ public class Transaction {
     public void updateState(TransactionState newState, String error) {
         this.state = newState;
         this.lastError = error;
-        touch(error == null ? "STATE " + newState.name() : "STATE " + newState.name() + " ERROR " + error);
+        touch(error == null
+                ? EVENT_STATE + newState.name()
+                : EVENT_STATE + newState.name() + EVENT_ERROR + error);
     }
 
     public void clearError() {
@@ -162,17 +175,17 @@ public class Transaction {
     }
 
     public void resetRetries() {
-        this.retryCount = 0;
-        touch("RETRY_RESET");
+        this.retryCount = INITIAL_RETRY_COUNT;
+        touch(EVENT_RETRY_RESET);
     }
 
     public void setRetryCount(int retryCount) {
         this.retryCount = retryCount;
-        touch("RETRY " + retryCount);
+        touch(EVENT_RETRY + retryCount);
     }
 
     public void incrementRetry() {
-        setRetryCount(retryCount + 1);
+        setRetryCount(retryCount + RETRY_INCREMENT);
     }
 
     public boolean isTerminal() {
@@ -190,6 +203,6 @@ public class Transaction {
     }
 
     private void addEvent(long timestamp, String event) {
-        history.add(timestamp + " | " + event);
+        history.add(timestamp + EVENT_SEPARATOR + event);
     }
 }

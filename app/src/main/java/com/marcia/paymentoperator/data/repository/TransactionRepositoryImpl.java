@@ -22,6 +22,31 @@ import java.util.UUID;
 public class TransactionRepositoryImpl implements TransactionRepository {
 
     private static final int MAX_TRANSACTIONS = 50;
+    private static final int DEFAULT_INT_VALUE = 0;
+    private static final int OLDEST_TRANSACTION_INDEX = 0;
+    private static final long DEFAULT_LONG_VALUE = 0L;
+    private static final String EMPTY_VALUE = "";
+    private static final String TMP_SUFFIX = ".tmp";
+    private static final String JOURNAL_COMMENT = "payment-operator-journal";
+    private static final String TRANSACTION_PREFIX = "tx.";
+    private static final String PROPERTY_SEPARATOR = ".";
+    private static final String PROPERTY_COUNT = "count";
+    private static final String PROPERTY_ID = "id";
+    private static final String PROPERTY_AMOUNT_REQUESTED = "amountRequested";
+    private static final String PROPERTY_CREATED_AT = "createdAt";
+    private static final String PROPERTY_AMOUNT_APPROVED = "amountApproved";
+    private static final String PROPERTY_CAPTURE_AMOUNT = "captureAmount";
+    private static final String PROPERTY_STATE = "state";
+    private static final String PROPERTY_RETRY_COUNT = "retryCount";
+    private static final String PROPERTY_LAST_ERROR = "lastError";
+    private static final String PROPERTY_LAST_UPDATED = "lastUpdated";
+    private static final String PROPERTY_HISTORY_COUNT = "history.count";
+    private static final String PROPERTY_HISTORY_PREFIX = "history.";
+    private static final String ERROR_READ_JOURNAL = "Could not read transaction journal";
+    private static final String ERROR_CREATE_DIRECTORY = "Could not create journal directory";
+    private static final String ERROR_WRITE_JOURNAL = "Could not write transaction journal";
+    private static final String ERROR_REPLACE_JOURNAL = "Could not replace transaction journal";
+    private static final String ERROR_COMMIT_JOURNAL = "Could not commit transaction journal";
 
     private final File journalFile;
     private final Map<UUID, Transaction> transactions = new HashMap<>();
@@ -74,21 +99,21 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         try (FileInputStream inputStream = new FileInputStream(journalFile)) {
             properties.load(inputStream);
         } catch (IOException e) {
-            throw new IllegalStateException("Could not read transaction journal", e);
+            throw new IllegalStateException(ERROR_READ_JOURNAL, e);
         }
 
-        int count = intProperty(properties, "count", 0);
+        int count = intProperty(properties, PROPERTY_COUNT, DEFAULT_INT_VALUE);
         for (int i = 0; i < count; i++) {
-            String prefix = "tx." + i + ".";
-            String id = properties.getProperty(prefix + "id");
+            String prefix = transactionPrefix(i);
+            String id = properties.getProperty(prefix + PROPERTY_ID);
             if (id == null) {
                 continue;
             }
 
             List<String> history = new ArrayList<>();
-            int historyCount = intProperty(properties, prefix + "history.count", 0);
+            int historyCount = intProperty(properties, prefix + PROPERTY_HISTORY_COUNT, DEFAULT_INT_VALUE);
             for (int j = 0; j < historyCount; j++) {
-                String event = properties.getProperty(prefix + "history." + j);
+                String event = properties.getProperty(prefix + PROPERTY_HISTORY_PREFIX + j);
                 if (event != null) {
                     history.add(event);
                 }
@@ -96,14 +121,14 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
             Transaction transaction = Transaction.restore(
                     UUID.fromString(id),
-                    longProperty(properties, prefix + "amountRequested", 0L),
-                    longProperty(properties, prefix + "createdAt", 0L),
-                    longProperty(properties, prefix + "amountApproved", 0L),
-                    longProperty(properties, prefix + "captureAmount", 0L),
-                    TransactionState.valueOf(properties.getProperty(prefix + "state")),
-                    intProperty(properties, prefix + "retryCount", 0),
-                    emptyToNull(properties.getProperty(prefix + "lastError")),
-                    longProperty(properties, prefix + "lastUpdated", 0L),
+                    longProperty(properties, prefix + PROPERTY_AMOUNT_REQUESTED, DEFAULT_LONG_VALUE),
+                    longProperty(properties, prefix + PROPERTY_CREATED_AT, DEFAULT_LONG_VALUE),
+                    longProperty(properties, prefix + PROPERTY_AMOUNT_APPROVED, DEFAULT_LONG_VALUE),
+                    longProperty(properties, prefix + PROPERTY_CAPTURE_AMOUNT, DEFAULT_LONG_VALUE),
+                    TransactionState.valueOf(properties.getProperty(prefix + PROPERTY_STATE)),
+                    intProperty(properties, prefix + PROPERTY_RETRY_COUNT, DEFAULT_INT_VALUE),
+                    emptyToNull(properties.getProperty(prefix + PROPERTY_LAST_ERROR)),
+                    longProperty(properties, prefix + PROPERTY_LAST_UPDATED, DEFAULT_LONG_VALUE),
                     history
             );
             transactions.put(transaction.getId(), transaction);
@@ -115,48 +140,48 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     private void writeToDisk() {
         File parent = journalFile.getParentFile();
         if (parent != null && !parent.exists() && !parent.mkdirs()) {
-            throw new IllegalStateException("Could not create journal directory");
+            throw new IllegalStateException(ERROR_CREATE_DIRECTORY);
         }
 
         Properties properties = new Properties();
         List<Transaction> snapshot = snapshotNewestFirst();
-        properties.setProperty("count", String.valueOf(snapshot.size()));
+        properties.setProperty(PROPERTY_COUNT, String.valueOf(snapshot.size()));
 
         for (int i = 0; i < snapshot.size(); i++) {
             Transaction transaction = snapshot.get(i);
-            String prefix = "tx." + i + ".";
+            String prefix = transactionPrefix(i);
 
-            properties.setProperty(prefix + "id", transaction.getId().toString());
-            properties.setProperty(prefix + "amountRequested", String.valueOf(transaction.getAmountRequested()));
-            properties.setProperty(prefix + "createdAt", String.valueOf(transaction.getCreatedAt()));
-            properties.setProperty(prefix + "amountApproved", String.valueOf(transaction.getAmountApproved()));
-            properties.setProperty(prefix + "captureAmount", String.valueOf(transaction.getCaptureAmount()));
-            properties.setProperty(prefix + "state", transaction.getState().name());
-            properties.setProperty(prefix + "retryCount", String.valueOf(transaction.getRetryCount()));
-            properties.setProperty(prefix + "lastError", nullToEmpty(transaction.getLastError()));
-            properties.setProperty(prefix + "lastUpdated", String.valueOf(transaction.getLastUpdated()));
+            properties.setProperty(prefix + PROPERTY_ID, transaction.getId().toString());
+            properties.setProperty(prefix + PROPERTY_AMOUNT_REQUESTED, String.valueOf(transaction.getAmountRequested()));
+            properties.setProperty(prefix + PROPERTY_CREATED_AT, String.valueOf(transaction.getCreatedAt()));
+            properties.setProperty(prefix + PROPERTY_AMOUNT_APPROVED, String.valueOf(transaction.getAmountApproved()));
+            properties.setProperty(prefix + PROPERTY_CAPTURE_AMOUNT, String.valueOf(transaction.getCaptureAmount()));
+            properties.setProperty(prefix + PROPERTY_STATE, transaction.getState().name());
+            properties.setProperty(prefix + PROPERTY_RETRY_COUNT, String.valueOf(transaction.getRetryCount()));
+            properties.setProperty(prefix + PROPERTY_LAST_ERROR, nullToEmpty(transaction.getLastError()));
+            properties.setProperty(prefix + PROPERTY_LAST_UPDATED, String.valueOf(transaction.getLastUpdated()));
 
             List<String> history = transaction.getHistory();
-            properties.setProperty(prefix + "history.count", String.valueOf(history.size()));
+            properties.setProperty(prefix + PROPERTY_HISTORY_COUNT, String.valueOf(history.size()));
             for (int j = 0; j < history.size(); j++) {
-                properties.setProperty(prefix + "history." + j, history.get(j));
+                properties.setProperty(prefix + PROPERTY_HISTORY_PREFIX + j, history.get(j));
             }
         }
 
         File tmpFile = parent == null
-                ? new File(journalFile.getName() + ".tmp")
-                : new File(parent, journalFile.getName() + ".tmp");
+                ? new File(journalFile.getName() + TMP_SUFFIX)
+                : new File(parent, journalFile.getName() + TMP_SUFFIX);
         try (FileOutputStream outputStream = new FileOutputStream(tmpFile)) {
-            properties.store(outputStream, "payment-operator-journal");
+            properties.store(outputStream, JOURNAL_COMMENT);
         } catch (IOException e) {
-            throw new IllegalStateException("Could not write transaction journal", e);
+            throw new IllegalStateException(ERROR_WRITE_JOURNAL, e);
         }
 
         if (journalFile.exists() && !journalFile.delete()) {
-            throw new IllegalStateException("Could not replace transaction journal");
+            throw new IllegalStateException(ERROR_REPLACE_JOURNAL);
         }
         if (!tmpFile.renameTo(journalFile)) {
-            throw new IllegalStateException("Could not commit transaction journal");
+            throw new IllegalStateException(ERROR_COMMIT_JOURNAL);
         }
     }
 
@@ -170,7 +195,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         });
 
         while (oldestFirst.size() > MAX_TRANSACTIONS) {
-            Transaction oldest = oldestFirst.remove(0);
+            Transaction oldest = oldestFirst.remove(OLDEST_TRANSACTION_INDEX);
             transactions.remove(oldest.getId());
         }
     }
@@ -193,6 +218,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         transactionLiveData.postValue(snapshotNewestFirst());
     }
 
+    private static String transactionPrefix(int index) {
+        return TRANSACTION_PREFIX + index + PROPERTY_SEPARATOR;
+    }
+
     private static int intProperty(Properties properties, String key, int fallback) {
         String value = properties.getProperty(key);
         return value == null ? fallback : Integer.parseInt(value);
@@ -204,10 +233,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     private static String nullToEmpty(String value) {
-        return value == null ? "" : value;
+        return value == null ? EMPTY_VALUE : value;
     }
 
     private static String emptyToNull(String value) {
-        return value == null || value.length() == 0 ? null : value;
+        return value == null || value.isEmpty() ? null : value;
     }
 }
